@@ -21,13 +21,20 @@ func main() {
 	timeValue := time.Now()
 	structArray := []sampleStruct{
 		{1, "string val1", 2.35, []string{"Ramin", "Mahdieh", "Bahar"}, timeValue},
-		{2, "string val2", 4.78, []string{"Michael", "John", "Chrise"}, timeValue.Add(time.Minute * time.Duration(2))},
+		{2, "string val2", 4.78, []string{"Michael", "John", "Chris"}, timeValue.Add(time.Minute * time.Duration(2))},
 		{3, "string val3", 1.56, []string{"Bill", "Steve", "Scott"}, timeValue.Add(time.Minute * time.Duration(4))},
 	}
-	Export2excel(structArray, "structArray.xlsx")
+	localize := map[string]string{
+		"Id": "شناسه",
+		"Feild1": "فیلد یک",
+		"Feild2": "فیلد دو",
+		"Authors": "نویسندگان",
+		"Birthdate": "تاریخ تولد",
+	}
+	Export2excel(structArray, localize, "structArray.xlsx")
 }
 
-func Export2excel(data interface{}, filename string) error {
+func Export2excel(data interface{}, localize map[string]string, filename string,) error {
 	items := reflect.ValueOf(data)
 	if items.Kind() != reflect.Slice {
 		return errors.New("THE DATA SOURCE MUST BE SLICE")
@@ -43,8 +50,14 @@ func Export2excel(data interface{}, filename string) error {
 	// Set Header of a columns.
 	for i := 0; i < fieldsCount; i++ {
 		columnName := getColumnName(i)
-		varName := col.Type().Field(i).Name
-		f.SetCellValue("Sheet1", columnName+"1", varName)
+		columnCaption := col.Type().Field(i).Name
+		if(localize != nil){
+			caption := localize[columnCaption]
+			if caption != ""{
+				columnCaption = caption
+			}
+		}
+		f.SetCellValue("Sheet1", columnName+"1", columnCaption)
 	}
 	// Set value of a cell.
 	for i := 0; i < items.Len(); i++ {
