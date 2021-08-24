@@ -32,12 +32,16 @@ func main() {
 		"Birthdate": "تاریخ تولد",
 	}
 	Export2excel(structArray, localize, "structArray.xlsx")
+	Export2excel(nil, nil, "structArray2.xlsx")
 }
 
 func Export2excel(data interface{}, localize map[string]string, filename string,) error {
 	items := reflect.ValueOf(data)
 	if items.Kind() != reflect.Slice {
 		return errors.New("THE DATA SOURCE MUST BE SLICE")
+	}
+	if items.Len() == 0 {
+		return errors.New("THE DATA SOURCE IS NIL")
 	}
 	if items.Index(0).Kind() != reflect.Struct {
 		return errors.New("THE SLICE ITEM IS NOT A STRUCT")
