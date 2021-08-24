@@ -21,21 +21,23 @@ func main() {
 	timeValue := time.Now()
 	structArray := []sampleStruct{
 		{1, "string val1", 2.35, []string{"Ramin", "Mahdieh", "Bahar"}, timeValue},
-		{2, "string val2", 4.78, []string{"Michael", "John", "Chris"}, timeValue.Add(time.Minute * time.Duration(2))},
-		{3, "string val3", 1.56, []string{"Bill", "Steve", "Scott"}, timeValue.Add(time.Minute * time.Duration(4))},
+		{2, "string val2", 3, []string{"Rahman", "Arash", "Reza"}, timeValue},
+		{3, "string val3", 4.78, []string{"Michael", "John", "Chris"}, timeValue.Add(time.Minute * time.Duration(2))},
+		{4, "string val4", 1.56, []string{"Bill", "Steve", "Scott"}, timeValue.Add(time.Minute * time.Duration(4))},
+		{5, "string val5", 10.20, []string{"Max", "Bob", "Peter"}, timeValue.Add(time.Minute * time.Duration(6))},
 	}
 	localize := map[string]string{
-		"Id": "شناسه",
-		"Feild1": "فیلد یک",
-		"Feild2": "فیلد دو",
-		"Authors": "نویسندگان",
+		"Id":        "شناسه",
+		"Feild1":    "فیلد یک",
+		"Feild2":    "فیلد دو",
+		"Authors":   "نویسندگان",
 		"Birthdate": "تاریخ تولد",
 	}
 	Export2excel(structArray, localize, "structArray.xlsx")
 	Export2excel(nil, nil, "structArray2.xlsx")
 }
 
-func Export2excel(data interface{}, localize map[string]string, filename string,) error {
+func Export2excel(data interface{}, localize map[string]string, filename string) error {
 	items := reflect.ValueOf(data)
 	if items.Kind() != reflect.Slice {
 		return errors.New("THE DATA SOURCE MUST BE SLICE")
@@ -55,9 +57,9 @@ func Export2excel(data interface{}, localize map[string]string, filename string,
 	for i := 0; i < fieldsCount; i++ {
 		columnName := getColumnName(i)
 		columnCaption := col.Type().Field(i).Name
-		if(localize != nil){
+		if localize != nil {
 			caption := localize[columnCaption]
-			if caption != ""{
+			if caption != "" {
 				columnCaption = caption
 			}
 		}
